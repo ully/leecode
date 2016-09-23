@@ -19,53 +19,47 @@ import java.util.List;
  */
 public class ThreeSum {
     public static void main(String[] args) {
-      int[] seq = {-1,0,1,2,-1,4};
-      List<int[]> result = findSumSeq(seq);
-        for(int[] re : result){
-            for(int i=0;i<re.length;i++){
-                System.out.println(re[i]);
+      int[] seq = {-2,0,1,1,2};
+        List<List<Integer>> result = findSumSeq(seq);
+        for(List<Integer> re : result){
+            for(int i=0;i<re.size();i++){
+                System.out.println(re.get(i));
             }
         }
 
     }
 
-    private static List<int[]> findSumSeq(int[] seq) {
-
-        Arrays.sort(seq);
-        int i=0;
-        int j=1;
-        List<int[]> list = new ArrayList<int[]>();
-        int[] result = new int[3];
-        while(i<j){
-            j = i+ 1;
-            int k= seq.length - 1;
-            while(j<k) {
-                int v = seq[i] + seq[j] + seq[k];
-                if (v > 0) {
-                    k = k - 1;
-                    while (j < k && seq[k] == seq[k-1]) {
-                            k--;
-                    }
-                }else if(v<0){
-                    j= j+1;
-                    while(j<k && seq[j] == seq[j-1]){
-                        j= j+1;
-                    }
-
-                }else{
-                    result[0] =seq[i];
-                    result[1] =seq[j];
-                    result[2] =seq[k];
-                    list.add(result);
+    private static List<List<Integer>> findSumSeq(int[] nums) {
+        Arrays.sort(nums);
+        List<List<Integer>> res = new ArrayList<>();
+        int j, k, sum;
+        for(int i=0;i<nums.length-2;i++){
+            j = i+1;
+            k = nums.length - 1;
+            while(j<k){
+                //System.out.println("Checking " + nums[i] + " , " + nums[j] + " , " + nums[k]);
+                sum = nums[i] + nums[j] + nums[k];
+                if (sum == 0){
+                    List<Integer> ls = new ArrayList<Integer>();
+                    ls.add(nums[i]);
+                    ls.add(nums[j]);
+                    ls.add(nums[k]);
+                    res.add(ls);
+                    j++;k--;
+                    while(j<k && nums[k]==nums[k+1]) k--;//to avoid duplicates
+                    while(j<k && nums[j]==nums[j-1]) j++;//to avoid duplicates
+                } else if (sum > 0){
+                    k--;
+                    while(j<k && nums[k]==nums[k+1]) k--;//optional skip for non-zero triplets
+                } else {
+                    j++;
+                    while(j<k && nums[j]==nums[j-1]) j++;//optional skip for non-zero triplets
                 }
             }
-            i = i+1;
+            while(i<nums.length-2 && nums[i]==nums[i+1]){ //to avoid duplicates
+                i++;
+            }
         }
-
-
-        while(i< seq.length && seq[i] == seq[i-1]){
-            i = i+1;
-        }
-        return list;
+        return res;
     }
 }
